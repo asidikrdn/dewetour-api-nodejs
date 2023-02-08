@@ -1,6 +1,13 @@
-// With MySQL Native Driver
+// .env initialization
+require("../dotenv/dotenv")();
 // const mysql = require("mysql2");
+const Sequelize = require("sequelize");
 
+// console.log(process.env.DB_NAME);
+// console.log(process.env.DB_USER);
+// console.log(process.env.DB_PASSWORD);
+
+// With MySQL Native Driver
 // const DB = mysql.createConnection({
 //   host: DB_PORT,
 //   port: process.env.DB_HOST,
@@ -8,7 +15,6 @@
 //   password: "inirahasia",
 //   database: "belajar-node",
 // });
-
 // const DatabaseInit = () => {
 //   DB.connect((err) => {
 //     if (err) throw err;
@@ -16,21 +22,7 @@
 //   });
 // };
 
-// module.exports = {
-//   DB,
-//   DatabaseInit,
-// };
-
 // With Sequelize
-const Sequelize = require("sequelize");
-
-// .env initialization
-require("../dotenv/dotenv")();
-
-console.log(process.env.DB_NAME);
-console.log(process.env.DB_USER);
-console.log(process.env.DB_PASSWORD);
-
 const DB = new Sequelize(
   process.env.DB_NAME,
   process.env.DB_USER,
@@ -41,8 +33,6 @@ const DB = new Sequelize(
     dialect: "mysql",
   }
 );
-
-// uses async-await
 const DatabaseInit = async () => {
   try {
     await DB.authenticate();
@@ -51,16 +41,5 @@ const DatabaseInit = async () => {
     console.error("Unable to connect to the database: ", err);
   }
 };
-
-// uses promises
-// const DatabaseInit = () => {
-//   DB.authenticate()
-//     .then(() => {
-//       console.log("Connected to database MySQL");
-//     })
-//     .catch((err) => {
-//       console.error("Unnable to connect to the database: ", err);
-//     });
-// };
 
 module.exports = { DB, DatabaseInit };
