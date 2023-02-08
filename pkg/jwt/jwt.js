@@ -1,3 +1,4 @@
+require("../dotenv/dotenv")();
 const jwt = require("jsonwebtoken");
 
 exports.GenerateToken = (payload, expiredIn = "24h") => {

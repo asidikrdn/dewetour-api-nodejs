@@ -2,6 +2,7 @@ const AuthRepository = require("../use_cases/auth");
 const { SuccessResult, ErrorResult } = require("../dto/result");
 const { RegisterResponse, LoginResponse } = require("../dto/auth");
 const { HashPassword, ComparePassword } = require("../pkg/bcrypt/bcrypt");
+const { GenerateToken } = require("../pkg/jwt/jwt");
 
 let AuthController = {};
 
@@ -41,10 +42,15 @@ AuthController.Login = async (req, res) => {
     if (!isPasswordTrue) {
       throw new Error("Wrong password");
     }
+    const token = await GenerateToken({
+      id: userLoggedIn.id,
+      full_name: userLoggedIn.full_name,
+      email: userLoggedIn.email,
+    });
 
     res
       .status(200)
-      .send(SuccessResult(200, "success", LoginResponse(userLoggedIn, "abcd")));
+      .send(SuccessResult(200, "success", LoginResponse(userLoggedIn, token)));
   } catch (err) {
     res.status(400).send(ErrorResult(400, err.message));
   }
