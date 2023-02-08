@@ -1,7 +1,5 @@
-// import express from "express"; // mengimport express
-// import router from "./routers/index.js"; // mengimport router
-// import dotenv from "dotenv"; // mengimport dotenv (untuk membaca file .env)
 const express = require("express");
+const formidable = require("express-formidable");
 const { router } = require("./routers/index");
 const { DatabaseInit } = require("./pkg/mysql/mysql");
 const { RunMigration } = require("./database/migration");
@@ -12,19 +10,21 @@ require("./pkg/dotenv/dotenv")();
 // membuat object instance express
 const app = express();
 
-// database init
+// database init & migration
 DatabaseInit();
-
-// database migration
 RunMigration();
 
-// menggunakan router dengan path prefix /api/v1
+// incoming request parser
+// app.use(express.json());
+app.use(formidable()); // form-data
+
+// setup router with path prefix "/api/v1"
 app.use("/api/v1", router);
 
-// deklarasi port (coba membaca dari env, jika kosong maka gunakan 3000 sebagai nilai default)
+// port declarations
 const port = process.env.PORT || 3000;
 
-// menjalankan web server
-app.listen(4135, () => {
+// run web server
+app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });
